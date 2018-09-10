@@ -1,0 +1,192 @@
+<ui:composition template="/WEB-INF/templates/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="title">Perfil</ui:define>
+
+	<ui:define name="content">
+
+		<p:panelGrid style="margin-top:20px; width:100%;">
+			<f:facet name="header">
+				<p:row>
+					<p:column colspan="2">
+						<p:commandLink id="changePasswdLink" value="#{msg.changePassword}"
+							update="updatePasswdForm"
+							oncomplete="PF('updatePasswdDialog').show()" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+						<h:outputLabel value="Noticias" />
+					</p:column>
+					<p:column style="width:500px;">
+						<h:form id="messageListForm">
+
+
+							<h:panelGroup id="display" style="width:500px;">
+								<p:panelGrid style="width:500px;" columns="4"
+									columnClasses="column">
+
+									<p:outputLabel for="startDate" value="#{msg.startDate}:" />
+									<p:calendar id="startDate"
+										value="#{messageController.startDate}"
+										pattern="MM/dd/yyyy HH:mm:ss" effect="fold" />
+
+									<p:outputLabel for="endDate" value="#{msg.endDate}:" />
+									<p:calendar id="endDate" value="#{messageController.endDate}"
+										pattern="MM/dd/yyyy HH:mm:ss" effect="fold" />
+
+									<p:outputLabel value="#{msg.title}:" for="msgTilte" />
+									<p:inputText id="msgTilte"
+										value="#{messageController.msgTitle}" title="#{msg.title}" />
+									<p:outputLabel value="#{msg.sender}:" />
+
+									<p:outputLabel value="#{msg.sender}:" />
+									<h:panelGrid columns="2" style="width:100%" border="1">
+										<p:inputText id="txtInputSearch"
+											value="#{usuariosController.userNameSearch}"
+											onblur="inputTextBlur( this, '#{usuariosController.userNameSearch}' );"
+											onfocus="inputTextFocus( this, '#{usuariosController.userNameSearch}' );" />
+										<p:commandLink id="cmdLink"
+											actionListener="#{usuariosController.advancedSearch}"
+											update="messageListForm:advanceSearchViewDlg"
+											oncomplete="PF('advanceSearchViewDialog').show()">
+											<span><h:graphicImage
+													url="resources/images/magnifier_16.png" width="17"
+													height="17" /></span>
+										</p:commandLink>
+
+										<p:dialog id="advanceSearchViewDlg"
+											widgetVar="advanceSearchViewDialog" modal="true"
+											resizable="false" appendTo="@(body)" closeOnEscape="true">
+											<p:dataScroller id="dataScroller" value="#{usuariosController.searchResultsItems}" var="result" chunkSize="5">
+												<f:facet name="loader">
+													<p:commandButton type="button" value="#{msg.more}"
+														icon="ui-icon-circle-triangle-s"
+														rendered="#{usuariosController.showSearchData}" />
+													<h:outputText value="#{msg.emptySearch}"
+														rendered="#{!usuariosController.showSearchData}"
+														style="font-weight: bold" />
+												</f:facet>
+												<h:panelGrid columns="2" style="width:100%">
+													<p:outputPanel>
+														<h:panelGrid columns="3">
+															<f:ajax execute="@form" render="@all"
+																onevent="PF('advanceSearchViewDialog').hide()">
+																<h:outputText value="#{result.nombreCompleto}"
+																	style="font-weight: bold" />
+																<h:commandLink id="result-#{result.idUsuario}"
+																	action="#{usuariosController.selectResult(result)}">
+																	<span><h:graphicImage
+																			url="resources/images/accept_16.png" width="12"
+																			height="12" /></span>
+																</h:commandLink>
+															</f:ajax>
+														</h:panelGrid>
+													</p:outputPanel>
+												</h:panelGrid>
+											</p:dataScroller>
+										</p:dialog>
+
+									</h:panelGrid>
+								</p:panelGrid>
+								<p:commandButton id="searchButton" icon="ui-icon-search"
+									value="#{msg.search}"
+									actionListener="#{messageController.init()}"
+									update=":messageListForm" />
+								<p:commandButton id="mailBtn" icon="ui-icon-search"
+									value="mailer" actionListener="#{templateController.sendMail}" />
+							</h:panelGroup>
+
+							<p:panel>
+								<p:dataTable id="datalist"
+									value="#{messageController.lazyModel}" var="item"
+									rowKey="#{item.messageId}" paginator="true"
+									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+									rows="10" rowsPerPageTemplate="10,20,30,40,50"
+									selectionMode="single" lazy="true">
+
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="#{msg.title}" />
+										</f:facet>
+										<h:outputText value="#{item.title}" />
+									</p:column>
+
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="#{msg.date}" />
+										</f:facet>
+									</p:column>
+
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="#{msg.sender}" />
+										</f:facet>
+										<h:outputText
+											value="#{item.senderId.firstName} #{item.senderId.lastName}"
+											style="border-style: none;" />
+									</p:column>
+								</p:dataTable>
+
+							</p:panel>
+							<ui:include src="/WEB-INF/templates/confirmation.xhtml" />
+						</h:form>
+					</p:column>
+				</p:row>
+			</f:facet>
+			<p:row>
+				<p:column>
+					<p:messages id="uploadMessage" autoUpdate="true" />
+					<h:form id="formUpload" enctype="multipart/form-data">
+						<p:fileUpload
+							fileUploadListener="#{UploadedFileController.upload}" auto="true"
+							update="uploadMessage" label="#{msg.search}" sizeLimit="2097152" />
+					</h:form>
+				</p:column>
+			</p:row>
+		</p:panelGrid>
+
+		<p:dialog id="messageViewDlg" widgetVar="messageViewDialog"
+			modal="true" resizable="false" appendTo="@(body)"
+			header="#{msg.message}" closeOnEscape="true">
+			<h:form id="messageViewForm">
+				<h:panelGroup id="display"
+					rendered="#{messageController.selected != null}">
+					<p:panelGrid columnClasses="column">
+						<h:outputText value="#{messageController.selected.title}"
+							styleClass="ui-title-font-style" />
+						<p:separator />
+						<h:outputText value="#{messageController.msgBody}" />
+					</p:panelGrid>
+				</h:panelGroup>
+			</h:form>
+		</p:dialog>
+
+
+
+		<p:dialog id="updatePasswdDlg" widgetVar="updatePasswdDialog"
+			modal="true" resizable="true" appendTo="@(body)"
+			header="#{msg.changePassword}" closeOnEscape="true">
+			<h:form id="updatePasswdForm">
+				<p:messages id="messages" showDetail="false" autoUpdate="true" />
+				<h:panelGrid columns="2" id="matchGrid" cellpadding="5">
+					<h:outputLabel for="pwd1" value="#{msg.password}: *" />
+					<p:password id="pwd1" value="#{usuariosController.newPassword}"
+						match="pwd2" label="#{msg.password}" required="true"
+						validatorMessage="#{msg.validateChangePasswdMsg}" />
+
+					<h:outputLabel for="pwd2" value="#{msg.confirmPassword}: *" />
+					<p:password id="pwd2" value="#{usuariosController.confirmPassword}"
+						label="#{msg.confirmPassword}" required="true" />
+				</h:panelGrid>
+
+				<p:commandButton update="updatePasswdForm" value="#{msg.save}"
+					action="#{usuariosController.updatePassword}" />
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

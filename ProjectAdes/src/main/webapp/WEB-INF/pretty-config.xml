@@ -1,0 +1,38 @@
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+
+<!-- Land page mapping  Land page mapping  Land page mapping  Land page mapping  Land page mapping -->
+	<url-mapping id="login">
+		<pattern value="/inicio" />
+		<view-id value="/login.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="perfil">
+		<pattern value="/bienvenido" />
+		<view-id value="/home/perfil.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="role">
+		<pattern value="/admin/role" />
+		<view-id value="/home/admin/role/index.xhtml" />
+	</url-mapping>	
+	
+	<url-mapping id="pagina">
+		<pattern value="/admin/pagina" />
+		<view-id value="/home/admin/page/index.xhtml" />
+	</url-mapping>	
+		
+	<url-mapping id="menu">
+		<pattern value="/admin/menu" />
+		<view-id value="/home/admin/menu/index.xhtml" />
+	</url-mapping>	
+		
+	<url-mapping id="usuario">
+		<pattern value="/admin/usuario" />
+		<view-id value="/home/admin/user/index.xhtml" />
+	</url-mapping>	
+
+	
+</pretty-config>

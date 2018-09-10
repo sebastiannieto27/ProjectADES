@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+    <body>
+	    <ui:composition>
+
+    <h:form id="uploadedFileListForm">
+
+        <p:panel header="#{msg.files}">
+            <p:dataTable id="datalist"
+                         value="#{uploadedFileController.items}"
+                         var="item"
+                         rowKey="#{item.uploadedFileId}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{uploadedFileController.selected}">
+
+                <p:ajax event="rowSelect"   update="@form:deleteButton" />
+                <p:ajax event="rowUnselect" update="@form:deleteButton" />
+                <p:ajax event="contextMenu" update="@form:deleteButton" />
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('UploadedFileListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.uploadedFileId}" filterBy="#{item.uploadedFileId}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msg.id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.uploadedFileId}"/>
+                </p:column>
+
+                <p:column sortBy="#{item.name}" filterBy="#{item.name}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msg.name}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.name}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.size}" filterBy="#{item.size}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msg.size}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.size}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.creationDate}" filterBy="#{item.creationDate}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msg.creationDate}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.creationDate}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                </p:column>
+
+                <p:column sortBy="#{item.userId.completeName}" filterBy="#{item.userId.completeName}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msg.user}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.userId.completeName}"/>
+                </p:column>
+                
+                <p:column>
+	               	<h:commandButton value="Download" id="downloadBtn" action="#{uploadedFileController.downloadFile}" />
+                </p:column>
+            </p:dataTable>
+
+			<p:commandButton id="searchButton" icon="ui-icon-search" value="#{msg.search}" actionListener="#{uploadedFileController.init()}" update=":uploadedFileListForm" />
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{msg.delete}" actionListener="#{uploadedFileController.delete}" update=":growl,datalist" disabled="#{empty uploadedFileController.selected}">
+                <p:confirm header="#{msg.confirmation_header}" message="#{msg.confirm_delete_message}" icon="ui-icon-alert"/>
+            </p:commandButton>
+
+        </p:panel>
+        <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">
+		    <p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
+		</p:dialog>
+         <ui:include src="/WEB-INF/templates/confirmation.xhtml"/>
+    </h:form>
+	    </ui:composition>
+    </body>
+</html>

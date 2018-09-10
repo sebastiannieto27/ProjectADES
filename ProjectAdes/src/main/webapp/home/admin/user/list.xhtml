@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+<body>
+	<ui:composition>
+		<h:form id="userListForm">
+			<p:contextMenu id="userDataTableContextMenu" for="datalist">
+
+				<p:separator />
+			</p:contextMenu>
+			<p:dataTable 
+				id="datalist" 
+				value="#{usuariosController.items}"
+				var="item" 
+				rowKey="#{item.idUsuario}" 
+				paginator="true"
+				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+				rows="10" 
+				rowsPerPageTemplate="10,20,30,40,50"
+				selectionMode="single" 
+				selection="#{usuariosController.selected}">
+
+
+
+				<p:column sortBy="#{item.idUsuario}" filterBy="#{item.idUsuario}">
+					<f:facet name="header">
+						<h:outputText value="#{myBundle.ListuserTitle_userId}" />
+					</f:facet>
+					<h:outputText value="#{item.idUsuario}" />
+				</p:column>
+
+				<p:column sortBy="#{item.nombreUsuario}" filterBy="#{item.nombreUsuario}">
+					<f:facet name="header">
+						<h:outputText value="#{myBundle.ListuserTitle_firstName}" />
+					</f:facet>
+					<h:outputText value="#{item.nombreUsuario}" />
+				</p:column>
+
+
+				<p:column sortBy="#{item.nombreCompleto}" filterBy="#{item.nombreCompleto}">
+					<f:facet name="header">
+						<h:outputText value="#{myBundle.ListuserTitle_lastName}" />
+					</f:facet>
+					<h:outputText value="#{item.nombreCompleto}" />
+				</p:column>
+
+
+				<p:column sortBy="#{item.correo}" filterBy="#{item.correo}">
+					<f:facet name="header">
+						<h:outputText value="#{myBundle.ListuserTitle_email}" />
+					</f:facet>
+					<h:outputText value="#{item.correo}" />
+				</p:column>
+
+				<p:column sortBy="#{item.idnumber}" filterBy="#{item.idnumber}">
+					<f:facet name="header">
+						<h:outputText value="#{myBundle.ListuserTitle_idNumber}" />
+					</f:facet>
+					<h:outputText value="#{item.idnumber}" />
+				</p:column>
+				
+				<p:column sortBy="#{item.isActive}" filterBy="#{item.isActive}">
+					<f:facet name="header">
+						<h:outputText value="#{myBundle.ListuserTitle_active}" />
+					</f:facet>
+					<h:selectBooleanCheckbox id="active" value="#{item.isActive}"
+						title="#{myBundle.EdituserTitle_active}" disabled="true" />
+				</p:column>
+
+				<p:column>
+                    <f:facet name="header">
+                        <h:outputText value="#{msg.role}"/>
+                    </f:facet>
+                    <p:commandLink id="viewRoleLink" value="#{msg.role}" update=":userRoleViewForm,:listUserRoleForm" 
+                    		oncomplete="PF('userRoleViewDialog').show()" actionListener="#{usuariosController.findNotAssignedRolesByUser(item)}"/>
+                </p:column>
+                
+ 				<p:column>
+                    <p:commandLink id="resetUserPasswd" value="#{msg.resetPassword}" update=":growl" actionListener="#{usuariosController.resetPassword(item)}"/>
+                </p:column>
+
+			</p:dataTable>
+			<p:commandButton id="searchButton" icon="ui-icon-search"
+				value="#{msg.search}" actionListener="#{usuariosController.init()}"
+				update="userListForm" />
+			<p:commandButton id="createButton" icon="ui-icon-plus"
+				value="#{msg.create}"
+				actionListener="#{usuariosController.prepareCreate}"
+				update=":userCreateForm" oncomplete="PF('userCreateDialog').show()" />
+			<p:commandButton id="viewButton" icon="ui-icon-search"
+				value="#{msg.view}" update=":userViewForm"
+				oncomplete="PF('userViewDialog').show()"
+				disabled="#{empty usuariosController.selected}" />
+			<p:commandButton id="editButton" icon="ui-icon-pencil"
+				value="#{msg.edit}" update=":userEditForm"
+				oncomplete="PF('userEditDialog').show()"
+				disabled="#{empty usuariosController.selected}" />
+			<p:commandButton id="deleteButton" icon="ui-icon-trash"
+				value="#{msg.delete}" actionListener="#{usuariosController.delete}"
+				update=":growl,datalist" disabled="#{empty usuariosController.selected}">
+				<p:confirm header="#{msg.confirmation_header}"
+					message="#{msg.confirm_delete_message}" icon="ui-icon-alert" />
+			</p:commandButton>
+			<ui:include src="/WEB-INF/templates/confirmation.xhtml" />
+		</h:form>
+	</ui:composition>
+</body>
+</html>

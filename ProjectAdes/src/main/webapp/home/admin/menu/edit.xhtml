@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="menuEditDlg" widgetVar="menuEditDialog" modal="true" resizable="false"  appendTo="@(body)" header="#{msg.edit} #{msg.menu}" closeOnEscape="true">
+
+            <h:form id="menuEditarFormulario">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{menuController.selected != null}">
+
+                        <p:outputLabel value="#{msg.name}" for="menuName" />
+                        <p:inputText id="menuName" value="#{menuController.selected.menuName}" title="#{msg.name}" required="true" requiredMessage="#{msg.name}" size="100" maxlength="100"/>
+
+                        <p:outputLabel value="#{msg.submenu}" for="submenu" />
+                        <p:selectBooleanCheckbox id="submenu" value="#{menuController.selected.isSelectedSubMenu}" />
+
+                        <p:outputLabel value="#{msg.parentMenu}" for="parentMenuId" />
+                        <p:selectOneMenu id="parentMenuId" value="#{menuController.parentIdMenu}" >
+                            <f:selectItem itemLabel="#{msg.SelectOneMessage}"/>
+                            <f:selectItems value="#{menuController.items}"
+                                           var="parentMenuIdItem"
+                                           itemValue="#{parentMenuIdItem.menuId}"
+                                           itemLabel="#{parentMenuIdItem.menuName.toString()}"
+                                           />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{msg.page}" for="pageId" />
+                        <p:selectOneMenu id="pageId" value="#{menuController.paginaId}">
+                            <f:selectItem itemLabel="#{msg.SelectOneMessage}"/>
+                            <f:selectItems value="#{paginaController.dtos}"
+                                           var="pageIdItem"
+                                           itemValue="#{pageIdItem.idPagina}"
+                                           itemLabel="#{pageIdItem.paginaName.toString()}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{msg.general}" for="general" />
+                        <p:selectBooleanCheckbox id="general" value="#{menuController.selected.isSelectedGeneral}" />
+                       
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{menuController.save}" value="#{msg.save}" update=":menuListaFormulario:listaDatos,:growl" oncomplete="handleSubmit(xhr,status,args,PF('menuEditDialog'));">
+                        <p:confirm header="#{msg.confirmation_header}" message="#{msg.confirm_edit_message}" icon="ui-icon-alert"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{msg.cancel}" onclick="PF('menuEditDialog').hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

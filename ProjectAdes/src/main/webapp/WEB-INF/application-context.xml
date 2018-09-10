@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.1.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+
+	<!-- DATASOURCE -->
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName"
+			value="oracle.jdbc.OracleDriver" />
+		<property name="url"
+			value="jdbc:oracle:thin:@localhost:1521:xe" />
+		<property name="username" value="SYSTEM" />
+		<property name="password" value="admin" />
+		<!--<property name="password" value="D1360$n1370$4d31n" /> -->
+	</bean>
+
+	<!-- Hibernate 3 Annotation SessionFactory Bean definition -->
+	<bean id="hibernate4AnnotatedSessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="annotatedClasses">
+			<list>
+				<value>co.com.core.domain.BaseEntity</value>
+				<value>co.com.core.domain.CasoPrueba</value>
+				<value>co.com.core.domain.ColumnaDatapool</value>
+				<value>co.com.core.domain.Menu</value>
+				<value>co.com.core.domain.Permiso</value>
+				<value>co.com.core.domain.Proyecto</value>
+				<value>co.com.core.domain.RegistroEjecucion</value>
+				<value>co.com.core.domain.Pagina</value>
+				<value>co.com.core.domain.PaginaPermiso</value>
+				<value>co.com.core.domain.Role</value>
+				<value>co.com.core.domain.RoleMenu</value>
+				<value>co.com.core.domain.RolePermisos</value>
+				<value>co.com.core.domain.UsuarioCaso</value>
+				<value>co.com.core.domain.Usuarios</value>
+				<value>co.com.core.domain.RoleUsuarios</value>
+				<value>co.com.core.domain.ValorColumnaDatapool</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+				<prop key="hibernate.current_session_context_class">thread</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- DAO DAO DAO DAO DAO DAO DAO DAO DAO DAO DAO DAO DAO DAO DAO DAO -->
+	<bean id="baseDAO" class="co.com.core.dao.impl.BaseDAO"></bean>
+
+	<bean id="paginaDao" class="co.com.core.dao.impl.PaginaDAOImpl">
+		<property name="sessionFactory"
+			ref="hibernate4AnnotatedSessionFactory" />
+	</bean>
+
+	<bean id="menuDao" class="co.com.core.dao.impl.MenuDAOImpl">
+		<property name="sessionFactory"
+			ref="hibernate4AnnotatedSessionFactory" />
+	</bean>
+
+	<bean id="usuarioDao" class="co.com.core.dao.impl.UsuariosDAOImpl">
+		<property name="sessionFactory"
+			ref="hibernate4AnnotatedSessionFactory" />
+	</bean>
+
+	<bean id="roleUsuariosDao"
+		class="co.com.core.dao.impl.RoleUsuariosDAOImpl">
+		<property name="sessionFactory"
+			ref="hibernate4AnnotatedSessionFactory" />
+	</bean>
+
+	<bean id="roleDao" class="co.com.core.dao.impl.RoleDAOImpl">
+		<property name="sessionFactory"
+			ref="hibernate4AnnotatedSessionFactory" />
+	</bean>
+
+	<bean id="roleMenuDao"
+		class="co.com.core.dao.impl.RoleMenuDAOImpl">
+		<property name="sessionFactory"
+			ref="hibernate4AnnotatedSessionFactory" />
+	</bean>
+
+
+
+	<!-- Services Services Services Services Services Services Services Services Services Services Services Services Services Services --><!-- Services Services Services Services Services Services Services Services Services Services Services Services Services Services --><!-- Services Services Services Services Services Services Services Services 
+		Services Services Services Services Services Services -->
+
+	<bean id="baseService"
+		class="co.com.core.services.impl.BaseServiceImpl">
+		<property name="baseDAO" ref="baseDAO" />
+	</bean>
+
+	<bean id="iPaginaService"
+		class="co.com.core.services.impl.PaginaServiceImpl">
+		<property name="paginaDao" ref="paginaDao" />
+	</bean>
+
+	<bean id="menuService"
+		class="co.com.core.services.impl.MenuServiceImpl">
+		<property name="menuDao" ref="menuDao" />
+	</bean>
+
+	<bean id="userService"
+		class="co.com.core.services.impl.UsuariosServiceImpl">
+		<property name="usuarioDao" ref="usuarioDao" />
+	</bean>
+
+
+
+	<bean id="roleUsuariosService"
+		class="co.com.core.services.impl.RoleUsuariosServiceImpl">
+		<property name="roleUsuariosDao" ref="roleUsuariosDao" />
+	</bean>
+
+	<bean id="roleService"
+		class="co.com.core.services.impl.RoleServiceImpl">
+		<property name="roleDao" ref="roleDao" />
+	</bean>
+
+	<bean id="roleMenuService"
+		class="co.com.core.services.impl.RoleMenuServiceImpl">
+		<property name="roleMenuDao" ref="roleMenuDao" />
+	</bean>
+
+
+
+	<!-- Controllers Controllers Controllers Controllers Controllers Controllers Controllers Controllers Controllers Controllers Controllers --><!-- Controllers Controllers Controllers Controllers Controllers Controllers 	Controllers Controllers Controllers Controllers Controllers --><!-- Controllers Controllers Controllers Controllers Controllers Controllers 
+		Controllers Controllers Controllers Controllers Controllers -->
+
+
+	<bean id="baseController" scope="session"
+		class="co.com.core.controller.BaseController">
+		<property name="baseService" ref="baseService" />
+	</bean>
+	
+	    <bean id="paginaController" scope="session" class="co.com.core.controller.PaginaController" init-method="init">
+    	<property name="iPaginaService" ref="iPaginaService" />
+    </bean>
+    
+      <bean id="menuController" scope="session" class="co.com.core.controller.MenuController" init-method="init">
+    	<property name="menuService" ref="menuService" />
+    </bean>
+    
+        <bean id="usuariosController" scope="session" class="co.com.core.controller.UsuariosController" init-method="init">
+    	<property name="userService" ref="userService" />
+    	<property name="roleUsuariosService" ref="roleUsuariosService" />
+    	<property name="roleService" ref="roleService" />
+    </bean>  
+
+
+	<bean id="loginController" scope="session"
+		class="co.com.core.controller.LoginController" init-method="init">
+		<property name="userService" ref="userService" />
+		<property name="menuController" ref="menuController" />
+	</bean>
+
+	<bean id="templateController" scope="session"
+		class="co.com.core.controller.TemplateController">
+		<property name="menuService" ref="menuService" />
+		<property name="iPaginaService" ref="iPaginaService" />
+	</bean>
+
+	<bean id="roleUsuariosController" scope="session"
+		class="co.com.core.controller.roleUsuariosController" init-method="init">
+		<property name="roleUsuariosService" ref="roleUsuariosService" />
+	</bean>
+
+	<bean id="roleController" scope="session"
+		class="co.com.core.controller.RoleController" init-method="init">
+		<property name="roleService" ref="roleService" />
+		<property name="roleMenuService" ref="roleMenuService" />
+		<property name="menuService" ref="menuService" />
+	</bean>
+
+	<bean id="roleMenuController" scope="session"
+		class="co.com.core.controller.RoleMenuController" init-method="init">
+		<property name="roleMenuService" ref="roleMenuService" />
+	</bean>
+
+
+</beans>
